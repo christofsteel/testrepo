@@ -26,6 +26,7 @@ jobs:
       - name: check out repo
         uses: actions/checkout@v4
       - name: Get best tag
+        id: tagname
         run: |
           case ${{ github.event_name }} in
           push)
@@ -37,3 +38,5 @@ jobs:
           esac
           SHA="\"commit-$(git rev-parse --short HEAD)\""
           echo "TAGS=\"[${TAGS}, ${SHA}]\"" >> "$GITHUB_OUTPUT"
+      - name: Print tags
+        run: echo ${{ steps.tagname.outputs.tags }}
