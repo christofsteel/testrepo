@@ -2,7 +2,7 @@ name: Test stuff
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
+  # Triggers the workflow on push with version tag
   push:
     tags: [ 'v*.*.*' ]
   pull_request:
@@ -23,3 +23,17 @@ jobs:
     steps:
       - name: Print event trigger
         run: echo ${{ github.event_name }}
+      - name: check out repo
+        uses: actions/checkout@v4
+      - name: Get best tag
+        run: |
+          case ${{ github.event_name }} in
+          push)
+            TAGS="$(git tag | sed 's/v\([^\.]\).\([^\.]\).\([^\.]\)/"\1", "\1.\2", "\1.\2.\3", "latest"/')"
+            ;;
+          pull_request)
+            TAGS="\"pr-${{ github.event.pull_request.head.ref }}\""
+            ;;
+          esac
+          SHA="\"commit-$(git rev-parse --short HEAD)\""
+          echo "TAGS=\"[${TAGS}, ${SHA}]\"" >> "$GITHUB_OUTPUT"
