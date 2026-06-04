@@ -30,13 +30,20 @@ jobs:
         run: |
           case ${{ github.event_name }} in
           push)
-            TAGS="$(git tag | sed 's/v\([^\.]\).\([^\.]\).\([^\.]\)/"\1", "\1.\2", "\1.\2.\3", "latest"/')"
+          TAGS="$(git tag | sed 's/v\([^\.]\).\([^\.]\).\([^\.]\)/"${IMAGE_NAME}:\1", "${IMAGE_NAME}:\1.\2", "${IMAGE_NAME}:\1.\2.\3", "${IMAGE_NAME}:latest"/')"
             ;;
           pull_request)
-            TAGS="\"pr-${{ github.event.pull_request.head.ref }}\""
+          TAGS="\"${IMAGE_NAME}:pr-${{ github.event.pull_request.head.ref }}\""
             ;;
           esac
-          SHA="\"commit-$(git rev-parse --short HEAD)\""
+          SHA="\"${IMAGE_NAME}:commit-$(git rev-parse --short HEAD)\""
           echo "TAGS=\"[${TAGS}, ${SHA}]\"" >> "$GITHUB_OUTPUT"
       - name: Print tags
         run: echo ${{ steps.tagname.outputs.tags }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          push: true
+          tags: ${{ steps.tagname.outputs.tags }}
