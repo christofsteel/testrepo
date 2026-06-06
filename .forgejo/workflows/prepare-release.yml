@@ -54,7 +54,7 @@ jobs:
       - uses: actions/forgejo-release@v2.12.1
         with:
           direction: upload
-          # token: ${{ secrets.DOCKER_TOKEN }}
+          release-notes-assistant: true
           tag: v${{ env.VERSION }}
           release-dir: dist
           prerelease: true
