@@ -25,3 +25,21 @@ jobs:
         run: git tag v${{ env.VERSION }}
       - name: Push tag
         run: git push --tags
+
+  make_prerelease:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out repo
+        uses: actions/checkout@v4
+      - name: Get tag
+        run: |
+          VERSION=$(git tag --points-at HEAD)
+      - name: call build
+        uses: ./.forgejo/workflows/build-artifact.yml
+      - name: download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+      - run: ls -al
+
+
