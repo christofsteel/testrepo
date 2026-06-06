@@ -28,14 +28,14 @@ jobs:
       - name: Get best tag
         id: tagname
         run: |
-          SHA="\"${IMAGE_NAME}:commit-$(git rev-parse --short HEAD)\""
+          SHA="${IMAGE_NAME}:commit-$(git rev-parse --short HEAD)"
           TAGS="${SHA}"
           case ${{ github.event_name }} in
           push)
-          TAGS="$(git tag | sed 's/v\([^\.]\).\([^\.]\).\([^\.]\)/"${IMAGE_NAME}:\1", "${IMAGE_NAME}:\1.\2", "${IMAGE_NAME}:\1.\2.\3", "${IMAGE_NAME}:latest", ${SHA}/')"}
+          TAGS="$(git tag | sed 's/v\([^\.]\).\([^\.]\).\([^\.]\)/${IMAGE_NAME}:\1,${IMAGE_NAME}:\1.\2,${IMAGE_NAME}:\1.\2.\3,${IMAGE_NAME}:latest,${SHA}/')"}
             ;;
           pull_request)
-          TAGS="\"${IMAGE_NAME}:pr-${{ github.event.pull_request.head.ref }}\", {SHA}"
+          TAGS="${IMAGE_NAME}:pr-${{ github.event.pull_request.head.ref }},{SHA}"
             ;;
           esac
           echo "TAGS=\"${TAGS}\"" >> "$GITHUB_OUTPUT"
