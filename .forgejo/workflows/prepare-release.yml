@@ -39,10 +39,21 @@ jobs:
       - name: Get tag
         run: |
           VERSION=$(git tag --points-at HEAD)
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: download artifact
         uses: actions/download-artifact@v3
         with:
           name: dist
-      - run: ls -al
+          path: dist
+      - uses: actions/forgejo-release@v2.12.1
+        with:
+          direction: upload
+          url: https://git.k-fortytwo.de
+          repo: chistofsteel/testrepo
+          token: ${{ secrets.DOCKER_TOKEN }}
+          tag: v${{ env.VERSION }}
+          release-dir: dist
+          prerelease: true
+
 
 
