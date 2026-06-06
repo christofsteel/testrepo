@@ -24,7 +24,7 @@ jobs:
       - name: Add tag
         run: git tag v${{ env.VERSION }}
       - name: Push tag
-        run: git push --tags || true
+        run: git push -f --tags
 
   build-artifact:
     needs: [update-version]
