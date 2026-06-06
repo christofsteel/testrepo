@@ -55,8 +55,9 @@ jobs:
         with:
           direction: upload
           url: https://git.k-fortytwo.de
-          repo: chistofsteel/testrepo
+          repo: christofsteel/testrepo
           token: ${{ secrets.DOCKER_TOKEN }}
+          tag: v${{ env.VERSION }}
           release-dir: dist
           prerelease: true
 
