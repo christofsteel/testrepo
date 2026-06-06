@@ -26,8 +26,12 @@ jobs:
       - name: Push tag
         run: git push --tags || true
 
-  make_prerelease:
+  build-artifact:
     needs: [update-version]
+    uses: ./.forgejo/workflows/build-artifact.yml
+
+  make_prerelease:
+    needs: [update-version, build-artifact]
     runs-on: ubuntu-latest
     steps:
       - name: check out repo
@@ -35,8 +39,6 @@ jobs:
       - name: Get tag
         run: |
           VERSION=$(git tag --points-at HEAD)
-      - name: call build
-        uses: ./.forgejo/workflows/build-artifact.yml
       - name: download artifact
         uses: actions/download-artifact@v3
         with:
