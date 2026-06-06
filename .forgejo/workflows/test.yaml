@@ -38,7 +38,7 @@ jobs:
           TAGS="\"${IMAGE_NAME}:pr-${{ github.event.pull_request.head.ref }}\", {SHA}"
             ;;
           esac
-          echo "TAGS=\"[${TAGS}]\"" >> "$GITHUB_OUTPUT"
+          echo "TAGS=\"${TAGS}\"" >> "$GITHUB_OUTPUT"
       - name: Print tags
         run: echo ${{ steps.tagname.outputs.tags }}
       - name: Set up Docker Buildx
