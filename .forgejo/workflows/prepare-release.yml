@@ -1,0 +1,27 @@
+name: Prepare next release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.19"      
+      - name: check out repo
+        uses: actions/checkout@v4
+      - name: get current version
+        run: |
+          VERSION=$(uv version --short)
+          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
+      - name: Check dev version
+        run: |
+          echo ${{ env.VERSION }}
+          if [[ "${{ env.VERSION }}" =~ ^[0-9]*\.[0-9]*\.[0-9]*$ ]]; then echo "This seems like an already released version"; false; else echo "looking good"; true; fi
+      - name: Add tag
+        run: git tag v${{ env.VERSION }}
+      - name: Push tag
+        run: git push --tags
