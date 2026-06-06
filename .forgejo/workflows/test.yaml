@@ -33,7 +33,7 @@ jobs:
           TAGS="${REGISTRY}/${SHA}"
           case ${{ github.event_name }} in
           push)
-          TAGS="$(git tag | sed 's/v\([^\.]\).\([^\.]\).\([^\.]\)/${REGISTRY}/${IMAGE_NAME}:\1,${REGISTRY}/${IMAGE_NAME}:\1.\2,${REGISTRY}/${IMAGE_NAME}:\1.\2.\3,${REGISTRY}/${IMAGE_NAME}:latest,${SHA}/')"}
+          TAGS="$(git tag | sed "s/v\([^\.]\).\([^\.]\).\([^\.]\)/${REGISTRY}/${IMAGE_NAME}:\1,${REGISTRY}/${IMAGE_NAME}:\1.\2,${REGISTRY}/${IMAGE_NAME}:\1.\2.\3,${REGISTRY}/${IMAGE_NAME}:latest,${SHA}/")"}
             ;;
           pull_request)
           TAGS="${REGISTRY}/${IMAGE_NAME}:pr-${{ github.event.pull_request.head.ref }},{SHA}"
