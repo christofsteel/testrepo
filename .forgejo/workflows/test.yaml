@@ -39,7 +39,7 @@ jobs:
           TAGS+=("pr-${{ github.event.pull_request.head.ref }}")
             ;;
           esac
-          FULL_TAGS=$(for tag in ${TAGS[@]}; do echo ${REGISTRY}/{IMAGE_NAME}:${tag}; done)
+          FULL_TAGS=$(for tag in ${TAGS[@]}; do echo ${REGISTRY}/${IMAGE_NAME}:${tag}; done)
           echo "TAGS=\"${FULL_TAGS}\"" >> "$GITHUB_OUTPUT"
       - name: Print tags
         run: echo ${{ steps.tagname.outputs.tags }}
