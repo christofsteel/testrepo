@@ -54,9 +54,7 @@ jobs:
       - uses: actions/forgejo-release@v2.12.1
         with:
           direction: upload
-          url: https://git.k-fortytwo.de
-          repo: christofsteel/testrepo
-          token: ${{ secrets.DOCKER_TOKEN }}
+          # token: ${{ secrets.DOCKER_TOKEN }}
           tag: v${{ env.VERSION }}
           release-dir: dist
           prerelease: true
