@@ -49,7 +49,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ env.USERNAME }}
-          password: ${{ secrets.FORGEJO_TOKEN }}
+          password: ${{ secrets.DOCKER_TESTREPO }}
 
       - name: Build and push
         uses: docker/build-push-action@v7
