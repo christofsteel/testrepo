@@ -4,6 +4,7 @@ on:
 
 jobs:
   build-sdist:
+    runs-on: ubuntu-latest
     steps:
       - name: Install uv
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
