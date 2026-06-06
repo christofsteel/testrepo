@@ -13,7 +13,7 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v4
       - name: Build
-        runs: uv build
+        run: uv build
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
