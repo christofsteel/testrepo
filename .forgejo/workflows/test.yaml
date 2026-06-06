@@ -29,17 +29,18 @@ jobs:
       - name: Get best tag
         id: tagname
         run: |
-          SHA="${REGISTRY}/${IMAGE_NAME}:commit-$(git rev-parse --short HEAD)"
-          TAGS="${SHA}"
+          SHA="commit-$(git rev-parse --short HEAD)"
+          TAGS=("${SHA}")
           case ${{ github.event_name }} in
           push)
-          TAGS="$(git tag | sed "s/v\([^\.]\).\([^\.]\).\([^\.]\)/${REGISTRY}\/${IMAGE_NAME}:\1,${REGISTRY}\/${IMAGE_NAME}:\1.\2,${REGISTRY}\/${IMAGE_NAME}:\1.\2.\3,${REGISTRY}\/${IMAGE_NAME}:latest,${SHA}/")"}
+          TAGS+=($(git tag --points-at HEAD | sed "s/v\([^\.]\).\([^\.]\).\([^\.]\)/\1 \1.\2 \1.\2.\3 latest/"))
             ;;
           pull_request)
-          TAGS="${REGISTRY}/${IMAGE_NAME}:pr-${{ github.event.pull_request.head.ref }},${SHA}"
+          TAGS+=("pr-${{ github.event.pull_request.head.ref }}")
             ;;
           esac
-          echo "TAGS=\"${TAGS}\"" >> "$GITHUB_OUTPUT"
+          FULL_TAGS=$(for tag in ${TAGS[@]}; do echo ${REGISTRY}/{IMAGE_NAME}:${tag}; done)
+          echo "TAGS=\"${FULL_TAGS}\"" >> "$GITHUB_OUTPUT"
       - name: Print tags
         run: echo ${{ steps.tagname.outputs.tags }}
       - name: Set up Docker Buildx
