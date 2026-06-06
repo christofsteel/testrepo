@@ -40,6 +40,7 @@ jobs:
     steps:
       - name: check out repo
         uses: actions/checkout@v4
+      - run: git tag
       - name: Get tag
         run: |
           VERSION=${{ needs.update-version.outputs.version }}
