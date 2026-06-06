@@ -39,6 +39,7 @@ jobs:
       - name: Get tag
         run: |
           VERSION=$(git tag --points-at HEAD)
+          echo $VERSION
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
       - name: download artifact
         uses: actions/download-artifact@v3
