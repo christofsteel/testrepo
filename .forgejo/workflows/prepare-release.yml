@@ -24,7 +24,7 @@ jobs:
       - name: Add tag
         run: git tag v${{ env.VERSION }}
       - name: Push tag
-        run: git push --tags
+        run: git push --tags || true
 
   make_prerelease:
     needs: [update-version]
