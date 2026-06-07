@@ -1,0 +1,105 @@
+name: Test stuff
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push with version tag
+  # push:
+  #   tags: [ 'v*.*.*' ]
+  # release:
+  #   types: [published, edited]
+  # pull_request:
+  #   branches: [ "main" ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      type:
+        description: 'Type of Build'
+        required: true
+        type: choice
+        options:
+          - pr
+          - release
+          - prerelease
+          - nightly
+      version:
+        description: 'version tag'
+        required: false
+        type: string
+      branch:
+        description: 'branch tag'
+        required: false
+        type: string
+  workflow_call:
+    inputs:
+      type:
+        description: 'One of pr/release/prerelease/nightly'
+        required: true
+        type: string
+      version:
+        description: 'version tag'
+        required: false
+        type: string
+      branch:
+        description: 'branch tag'
+        required: false
+        type: string
+
+env:
+  REGISTRY: git.k-fortytwo.de
+  REGISTRY2: ghcr.io
+  IMAGE_NAME: christofsteel/testrepo
+  USERNAME: christofsteel
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print event trigger
+        run: echo ${{ github.event_name }}
+      - name: check out repo
+        uses: actions/checkout@v4
+      - name: Get best tag
+        id: tagname
+        run: |
+          SHA="commit-$(git rev-parse --short HEAD)"
+          TAGS=("${SHA}")
+          case ${{ inputs.type }} in
+          release)
+          TAGS+=($(echo ${{ inputs.version }} | sed "s/v\([^\.]\).\([^\.]\).\([^\.]\)/\1 \1.\2 \1.\2.\3 latest/"))
+            ;;
+          prerelease)
+          TAGS+=($(echo ${{ inputs.version }} | sed "s/\$v\(.*\)/\1 prerelease/"))          
+          pr)
+          TAGS+=("pr-${{ inputs.branch }}")
+            ;;
+          esac
+          FULL_TAGS=$(for tag in ${TAGS[@]}; do echo ${REGISTRY2}/${IMAGE_NAME}:${tag},${REGISTRY}/${IMAGE_NAME}:${tag}; done | tr '\n' ',' | sed s/,$//)
+          echo "TAGS=\"${FULL_TAGS}\"" >> "$GITHUB_OUTPUT"
+      - name: Print tags
+        run: echo ${{ steps.tagname.outputs.tags }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: Docker login
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ env.USERNAME }}
+          password: ${{ secrets.DOCKER_TESTREPO }}
+      - name: Docker login (GH)
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ env.REGISTRY2 }}
+          username: ${{ env.USERNAME }}
+          password: ${{ secrets.GH_TESTREPO }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.tagname.outputs.tags }}
+          labels:
+            - org.opencontainers.image.source=https://github.com/${IMAGE_NAME}

@@ -34,8 +34,14 @@ jobs:
     needs: [update-version]
     uses: ./.forgejo/workflows/build-artifact.yml
 
+  build-docker:
+    needs: [update-version]
+    uses: ./.forgejo/workflows/build-docker.yml
+    with:
+      type: prerelease
+
   make_prerelease:
-    needs: [update-version, build-artifact]
+    needs: [update-version, build-artifact, build-docker]
     runs-on: ubuntu-latest
     steps:
       - name: check out repo
