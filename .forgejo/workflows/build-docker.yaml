@@ -52,10 +52,8 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-
   docker:
     runs-on: ubuntu-latest
-
     steps:
       - name: Print event trigger
         run: echo ${{ github.event_name }}
@@ -94,12 +92,9 @@ jobs:
           registry: ${{ env.REGISTRY2 }}
           username: ${{ env.USERNAME }}
           password: ${{ secrets.GH_TESTREPO }}
-
       - name: Build and push
         uses: docker/build-push-action@v7
         with:
           context: .
           push: true
           tags: ${{ steps.tagname.outputs.tags }}
-          labels:
-            - org.opencontainers.image.source=https://github.com/${IMAGE_NAME}
