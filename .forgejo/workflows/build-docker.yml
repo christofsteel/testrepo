@@ -75,7 +75,7 @@ jobs:
           TAGS+=("pr-${{ inputs.branch }}")
             ;;
           esac
-          FULL_TAGS=$(for tag in ${TAGS[@]}; do echo ${REGISTRY2}/${IMAGE_NAME}:${tag},${REGISTRY}/${IMAGE_NAME}:${tag}; done | tr '\n' ',' | sed s/,$//)
+          FULL_TAGS=$(for tag in ${TAGS[@]}; do echo ${{ env.REGISTRY2 }}/${{ env.IMAGE_NAME }}:${tag},${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${tag}; done | tr '\n' ',' | sed s/,$//)
           echo "TAGS=\"${FULL_TAGS}\"" >> "$GITHUB_OUTPUT"
       - name: Print tags
         run: echo ${{ steps.tagname.outputs.tags }}
