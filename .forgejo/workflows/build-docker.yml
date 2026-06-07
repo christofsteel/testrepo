@@ -70,6 +70,7 @@ jobs:
             ;;
           prerelease)
           TAGS+=($(echo ${{ inputs.version }} | sed "s/\$v\(.*\)/\1 prerelease/"))          
+          ;;
           pr)
           TAGS+=("pr-${{ inputs.branch }}")
             ;;
