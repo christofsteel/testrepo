@@ -29,6 +29,7 @@ on:
         description: 'branch tag'
         required: false
         type: string
+
   workflow_call:
     inputs:
       type:
@@ -45,16 +46,18 @@ on:
         type: string
 
 env:
-  REGISTRY: git.k-fortytwo.de
-  REGISTRY2: ghcr.io
-  IMAGE_NAME: christofsteel/testrepo
-  USERNAME: christofsteel
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Set envs
+        run: |
+          echo "REGISTRY=git.k-fortytwo.de" >> $GITHUB_ENV
+          echo "REGISTRY2=ghcr.io" >> $GITHUB_ENV
+          echo "IMAGE_NAME=christofsteel/testrepo" >> $GITHUB_ENV
+          echo "USERNAME=christofsteel" >> $GITHUB_ENV
       - name: Print event trigger
         run: echo ${{ github.event_name }}
       - name: check out repo
