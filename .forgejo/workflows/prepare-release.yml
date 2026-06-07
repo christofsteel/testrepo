@@ -37,6 +37,9 @@ jobs:
   build-docker:
     needs: [update-version]
     uses: ./.forgejo/workflows/build-docker.yml
+    secrets:
+      DOCKER_TESTREPO: ${{ secrets.DOCKER_TESTREPO }} 
+      GH_TESTREPO: ${{ secrets.GH_TESTREPO }}
     with:
       type: prerelease
 
