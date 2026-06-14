@@ -34,7 +34,7 @@ jobs:
       - name: Bump to stable
         if: ${{ inputs.type == 'stable' }}
         run: |
-          uv version --bump --stable
+          uv version --bump stable
           git add pyproject.toml
           git commit -m "Update to stable version: $(uv version --short)"
       - name: get current version
@@ -98,7 +98,7 @@ jobs:
           version: "0.11.19"      
       - name: Bump to dev
         run: |
-          uv version --bump --dev
+          uv version --bump patch --bump dev
           git add pyproject.toml
           git commit -m "Update to dev version: $(uv version --short)"
       - name: push
