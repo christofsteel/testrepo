@@ -98,12 +98,14 @@ jobs:
           version: "0.11.19"      
       - name: check out repo
         uses: actions/checkout@v4
+      - name: set git credentials
+        run: |
+          git config --global user.name "Forgejo Action CI"
+          git config --global user.email "git@git.k-fortytwo.de"
       - name: Bump to dev
         run: |
           uv version --bump patch --bump dev
           git add pyproject.toml
-          git config --global user.name "Forgejo Action CI"
-          git config --global user.name "git@git.k-fortytwo.de"
           git commit -m "Update to dev version: $(uv version --short)"
       - name: push
         run: git push
