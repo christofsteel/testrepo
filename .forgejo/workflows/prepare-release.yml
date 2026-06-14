@@ -102,6 +102,8 @@ jobs:
         run: |
           uv version --bump patch --bump dev
           git add pyproject.toml
+          git config --global user.name "Forgejo Action CI"
+          git config --global user.name "git@git.k-fortytwo.de"
           git commit -m "Update to dev version: $(uv version --short)"
       - name: push
         run: git push
