@@ -40,7 +40,7 @@ jobs:
       - name: get current version
         id: get-version
         run: |
-          VERSION=$(uv version --short)
+          VERSION=$(uv version --short | sed 's/\.dev/-dev/')
           echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
           echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
       - name: Add tag
@@ -104,7 +104,11 @@ jobs:
           git config --global user.email "git@git.k-fortytwo.de"
       - name: Bump to dev
         run: |
-          uv version --bump patch --bump dev
+          if [[ "$(uv version --short)" =~ "dev" ]]; then
+            uv version --bump dev
+          else
+            uv version --bump patch --bump dev
+          fi
           git add pyproject.toml
           git commit -m "Update to dev version: $(uv version --short)"
       - name: push
