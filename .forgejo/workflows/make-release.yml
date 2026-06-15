@@ -2,11 +2,11 @@ name: Make the release
 
 on:
   workflow_dispatch:
-  inputs:
-    tag:
-      description: "Tag"
-      required: true
-      type: string
+    inputs:
+      tag:
+        description: "Tag"
+        required: true
+        type: string
 
   push:
     tags: [ 'v*.*.*' ]
