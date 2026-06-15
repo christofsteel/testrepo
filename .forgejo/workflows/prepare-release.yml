@@ -51,3 +51,74 @@ jobs:
         run: |
           git push
           git push -f --tags
+
+  build-artifact:
+    uses: ./.forgejo/workflows/build-artifact.yml
+
+  build-docker:
+    uses: ./.forgejo/workflows/build-docker.yml
+    secrets:
+      DOCKER_TESTREPO: ${{ secrets.DOCKER_TESTREPO }} 
+      GH_TESTREPO: ${{ secrets.GH_TESTREPO }}
+    with:
+      type: prerelease
+
+          
+  make_release:
+    needs: [build-artifact, build-docker]
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out repo
+        uses: actions/checkout@v4
+      - name: Get tag
+        id: tag
+        run: |
+            echo "TAG=v${{ needs.update-version.outputs.version }}" >> $GITHUB_OUTPUT
+      - name: Check for stable version
+        id: stable
+        run: |
+            echo "STABLE=${{ inputs.type != stable }}" >> $GITHUB_OUTPUT
+      - name: Print version
+        run: |
+          echo "Version: ${{ steps.tag.outputs.tag }}"
+          echo "Stable: ${{ steps.stable.outputs.stable }}"
+      - name: download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+          path: dist
+      - name: sha
+        run: echo "sha=$(git log -1 --format=%H)" >> $GITHUB_ENV
+      - uses: actions/forgejo-release@v2.12.1
+        with:
+          direction: upload
+          release-notes-assistant: true
+          tag: ${{ steps.tag.outputs.tag }}
+          sha: ${{ env.sha }}
+          release-dir: dist
+          prerelease: ${{ steps.stable.outputs.stable }}
+  
+  bump_to_dev:
+    needs: [make_release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.19"      
+      - name: check out repo
+        uses: actions/checkout@v4
+      - name: set git credentials
+        run: |
+          git config --global user.name "Forgejo Action CI"
+          git config --global user.email "git@git.k-fortytwo.de"
+      - name: Bump to dev
+        run: |
+          uv version --bump patch --bump dev
+          git add pyproject.toml
+          git commit -m "Update to dev version: $(uv version --short)"
+      - name: push
+        run: git push
+
+
+
