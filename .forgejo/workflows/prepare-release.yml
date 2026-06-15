@@ -44,7 +44,7 @@ jobs:
       - name: get current version
         run: |
           VERSION=$(uv version --short | sed 's/\.dev/-dev/')
-          echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
       - name: Add tag
         run: git tag v${{ env.VERSION }}
       - name: Push tag
