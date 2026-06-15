@@ -43,14 +43,14 @@ jobs:
           esac
       - name: Check for stable version
         id: stable
-        runs: |
+        run: |
           if [[ "${{ steps.tag.outputs.tag }}" =~ ^[0-9]*\.[0-9]*\.[0-9]*$ ]]; then 
             echo "STABLE=true" >> GITHUB_OUTPUT
           else
             echo "STABLE=false" >> GITHUB_OUTPUT
           fi
       - name: Print version
-        runs: |
+        run: |
           echo "Version: ${{ steps.tag.outputs.tag }}"
           echo "Stable: ${{ steps.stable.outputs.stable }}"
       - name: download artifact
