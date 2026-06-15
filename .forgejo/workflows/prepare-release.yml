@@ -1,4 +1,4 @@
-name: Create a release
+name: Tag a Release
 
 on:
   workflow_dispatch:
@@ -42,81 +42,12 @@ jobs:
           git add pyproject.toml
           git commit -m "Update to stable version: $(uv version --short)"
       - name: get current version
-        id: get-version
         run: |
           VERSION=$(uv version --short | sed 's/\.dev/-dev/')
           echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
-          echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
       - name: Add tag
         run: git tag v${{ env.VERSION }}
       - name: Push tag
         run: |
           git push
           git push -f --tags
-
-  build-artifact:
-    needs: [update-version]
-    uses: ./.forgejo/workflows/build-artifact.yml
-
-  build-docker:
-    needs: [update-version]
-    uses: ./.forgejo/workflows/build-docker.yml
-    secrets:
-      DOCKER_TESTREPO: ${{ secrets.DOCKER_TESTREPO }} 
-      GH_TESTREPO: ${{ secrets.GH_TESTREPO }}
-    with:
-      type: prerelease
-
-  make_release:
-    needs: [update-version, build-artifact, build-docker]
-    runs-on: ubuntu-latest
-    steps:
-      - name: check out repo
-        uses: actions/checkout@v4
-      - run: git tag
-      - name: Get tag
-        run: |
-          VERSION=${{ needs.update-version.outputs.version }}
-          echo $VERSION
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
-      - name: download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: dist
-          path: dist
-      - uses: actions/forgejo-release@v2.12.1
-        with:
-          direction: upload
-          release-notes-assistant: true
-          tag: v${{ env.VERSION }}
-          release-dir: dist
-          prerelease: ${{ inputs.type != 'stable' }}
-
-  bump_to_dev:
-    needs: [make_release]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Install uv
-        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
-        with:
-          version: "0.11.19"      
-      - name: check out repo
-        uses: actions/checkout@v4
-      - name: set git credentials
-        run: |
-          git config --global user.name "Forgejo Action CI"
-          git config --global user.email "git@git.k-fortytwo.de"
-      - name: Bump to dev
-        run: |
-          if [[ "$(uv version --short)" =~ "dev" ]]; then
-            uv version --bump dev
-          else
-            uv version --bump patch --bump dev
-          fi
-          git add pyproject.toml
-          git commit -m "Update to dev version: $(uv version --short)"
-      - name: push
-        run: git push
-
-
-
