@@ -66,10 +66,10 @@ jobs:
           SHA="commit-$(git rev-parse --short HEAD)"
           TAGS=("${SHA}")
           case ${{ inputs.type }} in
-          release)
+          stable)
           TAGS+=($(echo ${{ inputs.version }} | sed "s/v\([^\.]\).\([^\.]\).\([^\.]\)/\1 \1.\2 \1.\2.\3 latest/"))
             ;;
-          prerelease)
+          dev)
           TAGS+=($(echo ${{ inputs.version }} | sed "s/\$v\(.*\)/\1 prerelease/"))          
           ;;
           pr)
