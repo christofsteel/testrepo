@@ -66,12 +66,14 @@ jobs:
     uses: ./.forgejo/workflows/build-artifact.yml
 
   build-docker:
+    needs: update-version
     uses: ./.forgejo/workflows/build-docker.yml
     secrets:
       DOCKER_TESTREPO: ${{ secrets.DOCKER_TESTREPO }} 
       GH_TESTREPO: ${{ secrets.GH_TESTREPO }}
     with:
       type: ${{ inputs.type }}
+      version: ${{ needs.update-version.outputs.version }}
 
           
   make_release:
