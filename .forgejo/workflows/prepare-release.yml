@@ -41,18 +41,19 @@ jobs:
           uv version --bump stable
           git add pyproject.toml
           git commit -m "Update to stable version: $(uv version --short)"
+          git push
       - name: get current version
         id: get-version
         run: |
           VERSION=$(uv version --short | sed 's/\.dev/-dev/')
           echo "VERSION=${VERSION}" >> "$GITHUB_ENV"
           echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
-      - name: Add tag
-        run: git tag v${{ env.VERSION }}
-      - name: Push tag
-        run: |
-          git push
-          git push -f --tags
+      # - name: Add tag
+      #   run: git tag v${{ env.VERSION }}
+      # - name: Push tag
+      #   run: |
+      #     git push
+      #     git push -f --tags
 
   build-artifact:
     uses: ./.forgejo/workflows/build-artifact.yml
