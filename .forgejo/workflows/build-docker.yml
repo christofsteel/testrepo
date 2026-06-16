@@ -18,8 +18,8 @@ on:
         type: choice
         options:
           - pr
-          - release
-          - prerelease
+          - stable
+          - dev
           - nightly
       version:
         description: 'version tag'
@@ -33,7 +33,7 @@ on:
   workflow_call:
     inputs:
       type:
-        description: 'One of pr/release/prerelease/nightly'
+        description: 'One of pr/stable/dev/nightly'
         required: true
         type: string
       version:
