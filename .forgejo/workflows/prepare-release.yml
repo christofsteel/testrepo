@@ -45,7 +45,7 @@ jobs:
           git push
       - name: sha
         id: sha
-        run: echo "sha=$(git log -1 --format=%H)" >> $GITHUB_OUTPUT}
+        run: echo "SHA=$(git log -1 --format=%H)" >> $GITHUB_OUTPUT}
       - name: get current version
         id: get-version
         run: |
