@@ -57,7 +57,7 @@ jobs:
           echo "IMAGE_NAME=christofsteel/testrepo" >> $GITHUB_ENV
           echo "USERNAME=christofsteel" >> $GITHUB_ENV
       - name: Print event trigger
-        run: echo ${{ github.event_name }}
+        run: echo ${{ github.event_name }} - ${{ inputs.type }}
       - name: check out repo
         uses: actions/checkout@v4
       - name: Get best tag
