@@ -67,7 +67,7 @@ jobs:
 
           
   make_release:
-    needs: [build-artifact, build-docker]
+    needs: [update-version, build-artifact, build-docker]
     runs-on: ubuntu-latest
     steps:
       - name: check out repo
