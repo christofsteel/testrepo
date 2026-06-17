@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ssh foo
-      - run: |
+        run: |
           eval $(ssh-agent -s)
           echo ${{ secrets.SYNG_SSH }} | ssh-add -
           ssh root@syng.rocks ls
