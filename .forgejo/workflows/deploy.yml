@@ -12,5 +12,7 @@ jobs:
         run: |
           eval $(ssh-agent -s)
           echo "${{ secrets.SYNG_SSH }}" | ssh-add -
+          mkdir ~/.ssh
+          ssh-keyscan syng.rocks  > ~/.ssh/known_hosts
           ssh root@syng.rocks ls
 
