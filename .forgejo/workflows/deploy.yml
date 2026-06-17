@@ -1,0 +1,16 @@
+name: deploy docker
+
+on:
+  workflow_dispatch:
+      
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ssh foo
+      - run: |
+          eval $(ssh-agent -s)
+          echo ${{ secrets.SYNG_SSH }} | ssh-add -
+          ssh root@syng.rocks ls
+
