@@ -11,6 +11,6 @@ jobs:
       - name: ssh foo
         run: |
           eval $(ssh-agent -s)
-          echo ${{ secrets.SYNG_SSH }} | ssh-add -
+          echo "${{ secrets.SYNG_SSH }}" | ssh-add -
           ssh root@syng.rocks ls
 
