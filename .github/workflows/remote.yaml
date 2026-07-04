@@ -8,8 +8,9 @@ jobs:
   testjob:
     runs-on: ubuntu-latest
     steps:
+      - run: echo "${{github.event.client_payload.sha}}"
       - name: get repo
         run: |
           git clone https://git.k-fortytwo.de/christofsteel/syng-deploytest
-          git checkout ${{ github.event.client_payload.sha }}
+          cd syng-deploytest && git checkout ${{ github.event.client_payload.sha }}
       - run: ls

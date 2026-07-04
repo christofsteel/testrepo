@@ -14,7 +14,8 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v4
       - name: get current HEAD
-        run: echo "SHA=$(git rev-parse HEAD)" >> GITHUB_ENV
+        run: echo "SHA=$(git rev-parse HEAD)" >> $GITHUB_ENV
+      - run: echo ${{ env.SHA }}
       - name: manual trigger
         run: | 
           curl -X POST \
