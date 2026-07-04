@@ -8,4 +8,8 @@ jobs:
   testjob:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Hello World"
+      - name: get repo
+        run: |
+          git clone https://git.k-fortytwo.de/syng-deploytest
+          git checkout ${{ github.event.client_payload.sha }}
+      - run: ls

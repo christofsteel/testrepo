@@ -11,10 +11,14 @@ jobs:
   execute-remote:
     runs-on: ubuntu-latest
     steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+      - name: get current HEAD
+        run: echo "SHA=$(git rev-parse HEAD)" >> GITHUB_ENV
       - name: manual trigger
         run: | 
           curl -X POST \
               -H "Authorization: token ${{ env.TOKEN }}" \
               -H "Accept: application/vnd.github.v3+json" \
               https://api.github.com/repos/${{ env.REPO }}/dispatches \
-              -d '{"event_type": "test-event"}'
+            -d "{\"event_type\": \"test-event\", \"client_payload\": {\"${{ env.SHA }}\"}}"
