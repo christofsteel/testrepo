@@ -10,6 +10,6 @@ jobs:
     steps:
       - name: get repo
         run: |
-          git clone https://git.k-fortytwo.de/syng-deploytest
+          git clone https://git.k-fortytwo.de/christofsteel/syng-deploytest
           git checkout ${{ github.event.client_payload.sha }}
       - run: ls
