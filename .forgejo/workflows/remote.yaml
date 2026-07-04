@@ -7,7 +7,7 @@ jobs:
   execute-remote:
     runs-on: ubuntu-latest
     steps:
-      - uses: peter-evans/repository-dispatch@v4
+      - uses: https://github.com/peter-evans/repository-dispatch@v4
         with:
           token: ${{ secrets.GHCR_PUSH }}
           repository: christofsteel/testrepo
