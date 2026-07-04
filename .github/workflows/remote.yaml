@@ -5,6 +5,7 @@ on:
     types: [test-event]
 
 jobs:
-  runs-on: ubuntu-latest
-  steps:
-    run: echo "Hello World"
+  testjob:
+    runs-on: ubuntu-latest
+    steps:
+      run: echo "Hello World"
