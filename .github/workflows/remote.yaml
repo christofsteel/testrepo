@@ -4,13 +4,25 @@ on:
   repository_dispatch:
     types: [test-event]
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   testjob:
     runs-on: ubuntu-latest
     steps:
       - run: echo "${{github.event.client_payload.sha}}"
+      - name: checkout repo
+        uses: actions/checkout@v6
       - name: get repo
         run: |
           git clone https://git.k-fortytwo.de/christofsteel/syng-deploytest
           # cd syng-deploytest && git checkout ${{ github.event.client_payload.sha }}
-      - run: ls
+      - run: |
+          cp -r syng-deploytest/resources/flatpak flatpak
+          rm -rf syng-deploytest
+      - name: create pr
+        uses: peter-evans/create-pull-request@v8
+
+
