@@ -3,12 +3,18 @@ name: Execute-remote
 on:
   workflow_dispatch:
 
+env:
+  TOKEN: ${{ secrets.GH_TESTREPO }}
+  REPO: christofsteel/testrepo
+
 jobs:
   execute-remote:
     runs-on: ubuntu-latest
     steps:
-      - uses: https://github.com/peter-evans/repository-dispatch@v4
-        with:
-          token: ${{ secrets.GH_TESTREPO }}
-          repository: christofsteel/testrepo
-          event-type: test-event
+      - name: manual trigger
+        run: | 
+          curl -X POST \
+              -H "Authorization: token ${{ env.TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/repos/${{ env.REPO }}/dispatches \
+              -d '{"event_type": "test-event"}'
