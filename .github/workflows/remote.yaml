@@ -12,5 +12,5 @@ jobs:
       - name: get repo
         run: |
           git clone https://git.k-fortytwo.de/christofsteel/syng-deploytest
-          cd syng-deploytest && git checkout ${{ github.event.client_payload.sha }}
+          # cd syng-deploytest && git checkout ${{ github.event.client_payload.sha }}
       - run: ls
