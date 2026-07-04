@@ -9,6 +9,6 @@ jobs:
     steps:
       - uses: https://github.com/peter-evans/repository-dispatch@v4
         with:
-          token: ${{ secrets.GHCR_PUSH }}
+          token: ${{ secrets.GH_TESTREPO }}
           repository: christofsteel/testrepo
           event-type: test-event
