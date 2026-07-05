@@ -12,16 +12,15 @@ jobs:
   testjob:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "${{github.event.client_payload.sha}}"
+      - run: echo "${{github.event.client_payload.url}}"
       - name: checkout repo
         uses: actions/checkout@v6
-      - name: get repo
-        run: |
-          git clone https://git.k-fortytwo.de/christofsteel/syng-deploytest
-          # cd syng-deploytest && git checkout ${{ github.event.client_payload.sha }}
-      - run: |
-          cp -r syng-deploytest/resources/flatpak flatpak
-          rm -rf syng-deploytest
+      - name: download-artifact
+        run: curl ${{ github.event.client_payload.url }} -o yaml.zip
+      - name: extract
+        run: unzip yaml.zip
+      - name: delete zip
+        run: rm yaml.zip
       - name: create pr
         uses: peter-evans/create-pull-request@v8
 
