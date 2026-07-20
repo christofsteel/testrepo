@@ -1,27 +1,35 @@
-name: MyWorkflow
+name: Update repo
 
 on:
   repository_dispatch:
-    types: [test-event]
-
-permissions:
-  contents: write
-  pull-requests: write
+    types: [trigger-workflow]
 
 jobs:
-  testjob:
+  create-pull-request:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    # if: github.repository_owner == 'flathub'
+
     steps:
-      - run: echo "${{github.event.client_payload.url}}"
-      - name: checkout repo
-        uses: actions/checkout@v6
-      - name: download-artifact
-        run: curl ${{ github.event.client_payload.url }} -o yaml.zip
-      - name: extract
-        run: unzip yaml.zip
-      - name: delete zip
-        run: rm yaml.zip
-      - name: create pr
+      - uses: actions/checkout@v6
+      - name: get upstream files
+        run: |
+          wget ${{ github.event.client_payload.url }} -O files.zip
+          file files.zip
+          unzip -o files.zip
+      - name: Create pull request
+        if: ${{ success() }}
+        id: create-pr
         uses: peter-evans/create-pull-request@v8
+        with:
+          branch-suffix: random
+          commit-message: Update to latest syng release
+          delete-branch: true
+          sign-commits: true
+          committer: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
 
 
